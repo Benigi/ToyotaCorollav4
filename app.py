@@ -99,12 +99,12 @@ def create_fallback_model():
 # PAGE CONFIGURATION
 # ============================================================================
 
-st.set_page_config(
+# st.set_page_config(
     page_title="Case Study: A Market-Independent ML Valuation Tool",
     page_icon="🚗",
     layout="wide",
     initial_sidebar_state="expanded"
-)
+# )
 
 # Custom CSS for sophisticated styling
 st.markdown("""
