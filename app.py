@@ -195,8 +195,9 @@ def load_model():
         if importance_file.exists():
             feature_importance = joblib.load(importance_file)
     else:
-        st.warning(
-            "⚠️ Aucune ressource de modèle trouvée. Utilisation d'un modèle de repli.")
+        Print(""")
+        #st.warning(
+            #"⚠️ Aucune ressource de modèle trouvée. Utilisation d'un modèle de repli.")
         MODEL_DIR.mkdir(parents=True, exist_ok=True)
         model, scaler, feature_importance = create_fallback_model()
         try:
