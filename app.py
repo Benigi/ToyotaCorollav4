@@ -331,8 +331,7 @@ def main():
         st.title("🚗 Case Study: A Market-Independent ML Valuation Tool")
         st.markdown("*Predict resale prices using advanced machine learning*")
     
-    with col2:
-        st.metric("Model Type", "Random Forest", delta="R² = 0.87")
+    # with col2: st.metric("Model Type", "Random Forest", delta="R² = 0.87")
     
     st.divider()
     
