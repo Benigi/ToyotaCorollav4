@@ -15,6 +15,11 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / 'data'
+MODEL_DIR = DATA_DIR / 'models'
+RAW_DIR = DATA_DIR / 'raw'
+
 # ============================================================================
 # PAGE CONFIGURATION
 # ============================================================================
@@ -82,24 +87,45 @@ st.markdown("""
 @st.cache_resource
 def load_model():
     """Load pre-trained model and related artifacts"""
-    try:
-        model = joblib.load('data/models/rf_model.pkl')
-        scaler = joblib.load('data/models/scaler.pkl')
-        feature_importance = joblib.load('data/models/feature_importance.pkl')
-        return model, scaler, feature_importance
-    except FileNotFoundError:
-        st.error("❌ Model files not found. Please ensure model artifacts are in data/models/")
+    model_file = MODEL_DIR / 'rf_model.pkl'
+    scaler_file = MODEL_DIR / 'scaler.pkl'
+    importance_file = MODEL_DIR / 'feature_importance.pkl'
+
+    if not model_file.exists():
+        st.error(f"❌ Model file not found: {model_file}")
         st.stop()
+
+    model = joblib.load(model_file)
+    scaler = joblib.load(scaler_file) if scaler_file.exists() else None
+
+    feature_importance = None
+    if importance_file.exists():
+        feature_importance = joblib.load(importance_file)
+
+    if not isinstance(feature_importance, pd.DataFrame):
+        if hasattr(model, 'feature_names_in_') and hasattr(model, 'feature_importances_'):
+            feature_importance = pd.DataFrame({
+                'Feature': model.feature_names_in_,
+                'Importance': model.feature_importances_
+            }).sort_values('Importance', ascending=False).reset_index(drop=True)
+        else:
+            feature_importance = pd.DataFrame({
+                'Feature': [f'Feature {i}' for i in range(getattr(model, 'n_features_in_', 0))],
+                'Importance': np.zeros(getattr(model, 'n_features_in_', 0))
+            })
+
+    return model, scaler, feature_importance
 
 @st.cache_data
 def load_reference_data():
     """Load reference data for statistics and visualization"""
-    try:
-        data = pd.read_csv('data/raw/ToyotaCorolla.csv')
-        return data
-    except FileNotFoundError:
-        st.warning("⚠️ Reference data not found. Using default statistics.")
-        return None
+    data_file = RAW_DIR / 'ToyotaCorolla.csv'
+
+    if data_file.exists():
+        return pd.read_csv(data_file)
+
+    st.warning("⚠️ Reference data not found. Using default statistics.")
+    return pd.DataFrame({'Price': []})
 
 # Load resources
 try:
@@ -173,6 +199,9 @@ def predict_price(age, mileage, hp, weight, cc, tax, cylinders,
     features = create_prediction_input(age, mileage, hp, weight, cc, tax, 
                                       cylinders, fuel_type, automatic, 
                                       met_color, abs_system, airco)
+
+    if scaler is not None:
+        features = scaler.transform(features)
     
     # Make prediction
     predicted_price = rf_model.predict(features)[0]
@@ -493,7 +522,7 @@ def main():
     with tab3:
         st.subheader("Market Position Analysis")
         
-        if reference_data is not None:
+        if reference_data is not None and not reference_data.empty:
             # Clean reference data
             ref_prices = pd.to_numeric(reference_data['Price'], errors='coerce').dropna()
             
