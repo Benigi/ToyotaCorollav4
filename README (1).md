@@ -1,223 +1,85 @@
-# Toyota Corolla Price Prediction - ML Valuation Tool
+# Toyota Corolla Valuation Tool
 
-A sophisticated machine learning application for predicting refurbished Toyota Corolla resale prices. Built with Random Forest regression, this tool helps dealerships estimate potential profits and make data-driven inventory decisions.
+Une application Streamlit pour estimer les prix de revente d'une Toyota Corolla.
+Ce repository contient le front-end `app.py` et le module d'entraînement `model_trainer.py`.
 
-## 🎯 Project Overview
+## 🧩 Structure actuelle du dépôt
 
-This project demonstrates the intersection of machine learning and business intelligence through an interactive valuation tool. By analyzing 1,400+ vehicle records across 37 different features, we've created a model that explains 87%+ of price variance and provides real-time valuations via an intuitive Streamlit interface.
+- `app.py` : application Streamlit principale
+- `model_trainer.py` : code de construction, d'entraînement et d'évaluation du modèle
+- `requirements.txt` : dépendances Python
+- `data/` : dossier attendu pour les données et modèles
+  - `data/models/` : modèles sérialisés
+  - `data/raw/` : données source (CSV)
 
-**Key Inspiration:** [OpenHPI Data Science 2023 Course](https://open.hpi.de/courses/datascience2023/overview)
+## 🚀 Installation et exécution
 
-## 📊 Features
-
-### Machine Learning Pipeline
-- **Data Cleaning**: Automated handling of non-integer values and outliers
-- **Exploratory Analysis**: Comprehensive statistical summaries and correlation studies
-- **Feature Engineering**: 37 vehicle attributes normalized and validated
-- **Model Training**: Random Forest with 200 trees, optimized for production performance
-- **Evaluation**: R² = 0.87, RMSE = €1,500, MAPE = 9.2%
-
-### Interactive Dashboard
-- **Real-time Valuations**: Adjust 12+ parameters and see price predictions instantly
-- **Intuitive Sliders**: Continuous variables (age, mileage, engine size, etc.)
-- **Toggle Options**: Binary features (fuel type, transmission, safety features)
-- **Visual Analytics**: Feature importance, correlation heatmaps, prediction distributions
-- **Production Ready**: Lightweight infrastructure, responsive design, no timeouts
-
-## 🏗️ Project Structure
-
-```
-toyota-corolla-valuation/
-├── README.md                          # Project documentation
-├── LICENSE                            # MIT License
-├── requirements.txt                   # Python dependencies
-├── .gitignore                         # Git ignore patterns
-├── setup.py                           # Package setup configuration
-│
-├── app.py                             # Main Streamlit application
-├── config.py                          # Configuration settings
-│
-├── src/
-│   ├── __init__.py
-│   ├── data/
-│   │   ├── __init__.py
-│   │   ├── loader.py                  # Data loading and preprocessing
-│   │   └── processor.py               # Data cleaning and normalization
-│   │
-│   ├── model/
-│   │   ├── __init__.py
-│   │   ├── trainer.py                 # Model training pipeline
-│   │   ├── evaluator.py               # Model evaluation metrics
-│   │   └── predictor.py               # Prediction interface
-│   │
-│   ├── visualization/
-│   │   ├── __init__.py
-│   │   ├── plots.py                   # Matplotlib plotting functions
-│   │   ├── dashboard.py               # Streamlit dashboard components
-│   │   └── styles.py                  # CSS styling for UI
-│   │
-│   └── utils/
-│       ├── __init__.py
-│       ├── constants.py               # Feature definitions and ranges
-│       ├── helpers.py                 # Utility functions
-│       └── validators.py              # Input validation
-│
-├── notebooks/
-│   ├── EDA.ipynb                      # Exploratory Data Analysis
-│   ├── Model_Development.ipynb        # Model training and tuning
-│   └── Analysis.ipynb                 # Comprehensive analysis
-│
-├── data/
-│   ├── raw/
-│   │   └── ToyotaCorolla.csv          # Original dataset
-│   ├── processed/
-│   │   └── normalized_data.csv        # Cleaned and normalized data
-│   └── models/
-│       ├── rf_model.pkl               # Trained Random Forest model
-│       ├── scaler.pkl                 # MinMaxScaler artifact
-│       └── feature_importance.pkl     # Feature importance data
-│
-├── tests/
-│   ├── __init__.py
-│   ├── test_data.py                   # Data processing tests
-│   ├── test_model.py                  # Model prediction tests
-│   └── test_integration.py            # End-to-end integration tests
-│
-├── docs/
-│   ├── ARCHITECTURE.md                # System architecture documentation
-│   ├── API.md                         # API reference
-│   ├── DEPLOYMENT.md                  # Deployment guide
-│   └── CONTRIBUTING.md                # Contribution guidelines
-│
-└── ci/
-    └── .github/workflows/
-        └── tests.yml                  # GitHub Actions CI/CD
-```
-
-## 📋 Requirements
-
-### System Requirements
-- Python 3.8+
-- pip or conda package manager
-- ~500MB disk space (including models)
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-
-### Dependencies
-See `requirements.txt` for complete list. Key packages:
-- `streamlit>=1.28.0` - Web application framework
-- `pandas>=1.3.0` - Data manipulation
-- `scikit-learn>=1.0.0` - Machine learning
-- `numpy>=1.21.0` - Numerical computing
-- `matplotlib>=3.4.0` - Visualization
-- `seaborn>=0.11.0` - Statistical graphics
-- `joblib>=1.1.0` - Model serialization
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
+### 1. Créer et activer l'environnement
 ```bash
-git clone https://github.com/yourusername/toyota-corolla-valuation.git
-cd toyota-corolla-valuation
+python3 -m venv venv
+source venv/bin/activate
 ```
 
-### 2. Set Up Environment
+### 2. Installer les dépendances
 ```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Download Data
-```bash
-# Ensure ToyotaCorolla.csv is in data/raw/
-# Download from: https://www.kaggle.com/datasets/klkwak/toyotacorollacsv
-ls data/raw/ToyotaCorolla.csv  # Verify file exists
-```
-
-### 4. Run the Application
+### 3. Lancer l'application
 ```bash
 streamlit run app.py
 ```
 
-The application will open at `http://localhost:8501`
+- Si `data/models/rf_model.pkl` est absent, `app.py` génère automatiquement un modèle de repli.
+- Le dossier `data/models/` est créé automatiquement si nécessaire.
 
-### 5. Run Analysis Notebook (Optional)
-```bash
-jupyter notebook notebooks/Analysis.ipynb
-```
+## 📌 Notes importantes
 
-## 💻 Using the Valuation Tool
+- `model_trainer.py` ne contient pas de chargeur de données intégré dans ce dépôt.
+- Pour entraîner un modèle personnalisé, charger vos données dans un DataFrame pandas puis appeler :
 
-### Interactive Dashboard
-1. **Adjust Vehicle Parameters**
-   - Use sliders for continuous variables (age, mileage, engine size)
-   - Use radio buttons for categorical options (fuel type, transmission)
-
-2. **Get Instant Valuation**
-   - Price updates in real-time as you adjust parameters
-   - Confidence metrics shown alongside predictions
-
-3. **Explore Analytics**
-   - View feature importance rankings
-   - See how parameters correlate with price
-   - Compare against historical data distribution
-
-### Example Usage
 ```python
-from src.model.predictor import Predictor
-
-predictor = Predictor('data/models/rf_model.pkl')
-
-valuation = predictor.predict(
-    age=60,                    # months
-    mileage=120000,            # km
-    horsepower=110,            # HP
-    engine_size=1800,          # cc
-    weight=1200,               # kg
-    fuel_type='Diesel',        # Petrol/Diesel
-    transmission='Manual',     # Manual/Automatic
-    color_type='Metallic',     # Standard/Metallic
-    has_abs=True,              # Yes/No
-    has_airco=True             # Yes/No
-)
-
-print(f"Estimated Price: €{valuation['price']:.2f}")
-print(f"Confidence: {valuation['confidence']:.2%}")
+from model_trainer import train_model
+trainer, train_info, eval_metrics = train_model(X, y)
+trainer.save('data/models/rf_model.pkl')
 ```
 
-## 📈 Model Performance
+- `app.py` utilise un modèle de repli synthétique si aucun modèle pré-entraîné n'est disponible.
 
-### Metrics
-| Metric | Training | Testing |
-|--------|----------|---------|
-| R² Score | 0.8804 | 0.8687 |
-| RMSE (€) | 1,243 | 1,502 |
-| MAE (€) | 906 | 1,089 |
-| MAPE (%) | 6.8 | 9.2 |
+## 🧪 Vérification rapide
 
-### Top Predictive Features
-1. **Age** (16.2%) - Vehicle age in months
-2. **Mileage** (14.8%) - Total kilometers driven
-3. **Weight** (12.3%) - Vehicle weight in kg
-4. **Engine Size** (11.5%) - Displacement in cc
-5. **Horsepower** (9.7%) - Engine power
+- Les fichiers Python sont compilables : `python3 -m py_compile app.py model_trainer.py`
+- Le module principal s'importe correctement : `python3 -c "import app, model_trainer"`
 
-### Model Rationale: Why Random Forest?
-- **Reduces Feature Domination**: Unlike linear models, RF doesn't let mileage overwhelm other signals
-- **Captures Non-linear Relationships**: Real price dynamics aren't always linear
-- **Robust to Outliers**: Less sensitive to anomalous data points
-- **Feature Interactions**: Automatically learns how variables interact
-- **Production Ready**: Fast inference, stable predictions
+## 🛠️ Détails
 
-## 🔄 Data Pipeline
+### `app.py`
+- affichage Streamlit interactif
+- chargement du modèle depuis `data/models/rf_model.pkl`
+- génération d'un modèle de repli si le fichier du modèle manque
+- affichage de graphiques Plotly
 
-### Processing Steps
-1. **Loading** → Read CSV, validate schema
-2. **Cleaning** → Remove non-numeric values, handle missing data
-3. **Encoding** → Convert categorical variables (Fuel Type, Transmission)
+### `model_trainer.py`
+- classe `ModelTrainer` pour construire, entraîner, évaluer et sauvegarder un RandomForestRegressor
+- fonction `train_model(X, y)` pour entraîner et évaluer un modèle sur un DataFrame pandas
+
+## 📋 Dépendances clés
+
+- `streamlit`
+- `pandas`
+- `numpy`
+- `plotly`
+- `joblib`
+- `scikit-learn`
+
+## 🧩 Fichiers attendus
+
+- `data/models/rf_model.pkl` (facultatif, créé automatiquement)
+- `data/raw/ToyotaCorolla.csv` (optionnel pour le support de comparaison de marché)
+
+## Résumé
+
+Le dépôt est désormais cohérent : l'application peut démarrer même sans modèle préexistant, et `model_trainer.py` est utilisable pour entraîner un modèle personnalisé. Si tu souhaites, je peux aussi ajouter un petit script `train.py` pour générer proprement `rf_model.pkl` à partir d'un CSV existant.
 4. **Normalization** → Scale features to 0-1 range using MinMaxScaler
 5. **Splitting** → 80% training, 20% testing
 6. **Training** → Random Forest with hyperparameter optimization

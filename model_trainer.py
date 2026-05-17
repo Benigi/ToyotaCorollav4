@@ -17,11 +17,11 @@ logger = logging.getLogger(__name__)
 
 
 class ModelTrainer:
-    \"\"\"Train and manage Random Forest regression model\"\"\"
+    """Train and manage Random Forest regression model"""
     
     def __init__(self, n_estimators: int = 200, max_depth: int = 20, 
                  min_samples_split: int = 5, random_state: int = 42):
-        \"\"\"
+        """
         Initialize ModelTrainer
         
         Parameters
@@ -34,7 +34,7 @@ class ModelTrainer:
             Minimum samples required to split a node
         random_state : int
             Random seed for reproducibility
-        \"\"\"
+        """
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -45,14 +45,14 @@ class ModelTrainer:
         self.cv_scores = None
     
     def build_model(self) -> RandomForestRegressor:
-        \"\"\"
+        """
         Build the Random Forest model
         
         Returns
         -------
         RandomForestRegressor
             Initialized model
-        \"\"\"
+        """
         self.model = RandomForestRegressor(
             n_estimators=self.n_estimators,
             max_depth=self.max_depth,
@@ -64,11 +64,11 @@ class ModelTrainer:
             verbose=0
         )
         
-        logger.info(f\"✓ Model built with {self.n_estimators} trees\")
+        logger.info(f"✓ Model built with {self.n_estimators} trees")
         return self.model
     
     def train(self, X_train: pd.DataFrame, y_train: pd.Series) -> Dict:
-        \"\"\"
+        """
         Train the model
         
         Parameters
@@ -82,11 +82,11 @@ class ModelTrainer:
         -------
         Dict
             Training information
-        \"\"\"
+        """
         if self.model is None:
             self.build_model()
         
-        logger.info(f\"Training on {X_train.shape[0]} samples with {X_train.shape[1]} features\")
+        logger.info(f"Training on {X_train.shape[0]} samples with {X_train.shape[1]} features")
         
         self.model.fit(X_train, y_train)
         
@@ -102,12 +102,12 @@ class ModelTrainer:
             'train_rmse': train_rmse
         }
         
-        logger.info(f\"✓ Training completed. R² = {train_r2:.4f}, RMSE = €{train_rmse:.2f}\")
+        logger.info(f"✓ Training completed. R² = {train_r2:.4f}, RMSE = €{train_rmse:.2f}")
         
         return self.training_history
     
     def evaluate(self, X_test: pd.DataFrame, y_test: pd.Series) -> Dict:
-        \"\"\"
+        """
         Evaluate model on test set
         
         Parameters
@@ -121,9 +121,9 @@ class ModelTrainer:
         -------
         Dict
             Evaluation metrics
-        \"\"\"
+        """
         if self.model is None:
-            raise RuntimeError(\"Model not trained. Call train() first.\")
+            raise RuntimeError("Model not trained. Call train() first.")
         
         y_pred = self.model.predict(X_test)
         
@@ -134,12 +134,12 @@ class ModelTrainer:
             'mape': np.mean(np.abs((y_test - y_pred) / y_test)) * 100
         }
         
-        logger.info(f\"✓ Evaluation completed. R² = {metrics['r2']:.4f}, RMSE = €{metrics['rmse']:.2f}\")
+        logger.info(f"✓ Evaluation completed. R² = {metrics['r2']:.4f}, RMSE = €{metrics['rmse']:.2f}")
         
         return metrics
     
     def cross_validate(self, X: pd.DataFrame, y: pd.Series, cv: int = 5) -> np.ndarray:
-        \"\"\"
+        """
         Perform cross-validation
         
         Parameters
@@ -155,31 +155,31 @@ class ModelTrainer:
         -------
         np.ndarray
             Cross-validation scores
-        \"\"\"
+        """
         if self.model is None:
             self.build_model()
         
-        logger.info(f\"Performing {cv}-fold cross-validation...\")
+        logger.info(f"Performing {cv}-fold cross-validation...")
         
         self.cv_scores = cross_val_score(
             self.model, X, y, cv=cv, scoring='r2', n_jobs=-1
         )
         
-        logger.info(f\"✓ CV scores: {self.cv_scores.mean():.4f} (+/- {self.cv_scores.std():.4f})\")
+        logger.info(f"✓ CV scores: {self.cv_scores.mean():.4f} (+/- {self.cv_scores.std():.4f})")
         
         return self.cv_scores
     
     def get_feature_importance(self) -> pd.DataFrame:
-        \"\"\"
+        """
         Get feature importance scores
         
         Returns
         -------
         pd.DataFrame
             Feature importance dataframe
-        \"\"\"
+        """
         if self.model is None:
-            raise RuntimeError(\"Model not trained.\")
+            raise RuntimeError("Model not trained.")
         
         importance_df = pd.DataFrame({
             'Feature': self.model.feature_names_in_,
@@ -189,7 +189,7 @@ class ModelTrainer:
         return importance_df
     
     def predict(self, X: pd.DataFrame) -> np.ndarray:
-        \"\"\"
+        """
         Make predictions
         
         Parameters
@@ -201,47 +201,47 @@ class ModelTrainer:
         -------
         np.ndarray
             Predictions
-        \"\"\"
+        """
         if self.model is None:
-            raise RuntimeError(\"Model not trained.\")
+            raise RuntimeError("Model not trained.")
         
         return self.model.predict(X)
     
     def save(self, path: str = 'data/models/rf_model.pkl'):
-        \"\"\"
+        """
         Save model to disk
         
         Parameters
         ----------
         path : str
             Path to save model
-        \"\"\"
+        """
         if self.model is None:
-            raise RuntimeError(\"Model not trained.\")
+            raise RuntimeError("Model not trained.")
         
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         joblib.dump(self.model, path)
-        logger.info(f\"✓ Model saved to {path}\")
+        logger.info(f"✓ Model saved to {path}")
     
     def load(self, path: str = 'data/models/rf_model.pkl'):
-        \"\"\"
+        """
         Load model from disk
         
         Parameters
         ----------
         path : str
             Path to model file
-        \"\"\"
+        """
         self.model = joblib.load(path)
-        logger.info(f\"✓ Model loaded from {path}\")
+        logger.info(f"✓ Model loaded from {path}")
 
 
 class ModelEvaluator:
-    \"\"\"Comprehensive model evaluation\"\"\"
+    """Comprehensive model evaluation"""
     
     @staticmethod
     def generate_report(y_true: pd.Series, y_pred: np.ndarray) -> Dict:
-        \"\"\"
+        """
         Generate detailed evaluation report
         
         Parameters
@@ -255,7 +255,7 @@ class ModelEvaluator:
         -------
         Dict
             Comprehensive evaluation metrics
-        \"\"\"
+        """
         residuals = y_true - y_pred
         
         report = {
@@ -287,7 +287,7 @@ class ModelEvaluator:
 
 def train_model(X: pd.DataFrame, y: pd.Series, 
                 test_size: float = 0.2) -> Tuple[ModelTrainer, Dict, Dict]:
-    \"\"\"
+    """
     Complete model training pipeline
     
     Parameters
@@ -303,15 +303,15 @@ def train_model(X: pd.DataFrame, y: pd.Series,
     -------
     Tuple[ModelTrainer, Dict, Dict]
         Trained model, training info, evaluation metrics
-    \"\"\"
-    logger.info(\"Starting model training pipeline...\")
+    """
+    logger.info("Starting model training pipeline...")
     
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=42
     )
     
-    logger.info(f\"Train/test split: {len(X_train)}/{len(X_test)}\")
+    logger.info(f"Train/test split: {len(X_train)}/{len(X_test)}")
     
     # Initialize and train
     trainer = ModelTrainer(n_estimators=200, max_depth=20)
@@ -325,24 +325,16 @@ def train_model(X: pd.DataFrame, y: pd.Series,
     eval_metrics['cv_mean'] = cv_scores.mean()
     eval_metrics['cv_std'] = cv_scores.std()
     
-    logger.info(\"✓ Model training pipeline completed\")
+    logger.info("✓ Model training pipeline completed")
     
     return trainer, train_info, eval_metrics
 
 
-if __name__ == \"__main__\":
-    # Example usage
-    from data_loader import DataLoader
-    from data_processor import process_data
-    
-    # Load and process data
-    loader = DataLoader('data/raw/ToyotaCorolla.csv')
-    data = loader.load()
-    X, y, scaler = process_data(data)
-    
-    # Train model
-    trainer, train_info, eval_metrics = train_model(X, y)
-    
-    print(\"Training Info:\", train_info)
-    print(\"\\nEvaluation Metrics:\", eval_metrics)
-    print(\"\\nFeature Importance:\\n\", trainer.get_feature_importance())
+if __name__ == "__main__":
+    print("model_trainer.py defines ModelTrainer and train_model().")
+    print("It does not include data loading utilities in this repository.")
+    print("To train a model, import train_model from model_trainer and pass X, y DataFrames.")
+    print("Example:")
+    print("  from model_trainer import train_model")
+    print("  trainer, train_info, eval_metrics = train_model(X, y)")
+    print("  trainer.save('data/models/rf_model.pkl')")
