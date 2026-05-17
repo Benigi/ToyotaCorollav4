@@ -109,48 +109,70 @@ st.set_page_config(
 # Custom CSS for sophisticated styling
 st.markdown("""
 <style>
-    /* Main container */
-    .stApp {
-        background-color: #f8f9fa;
+    body, .stApp, .main, .block-container, .css-1d391kg, .css-1d391kg .css-1lcbmhc {
+        background-color: #0E1117 !important;
+        color: #E2E8F0 !important;
     }
-    
+
+    .stApp {
+        background-color: #0E1117;
+    }
+
+    .block-container {
+        background-color: #0F172A;
+        color: #E2E8F0;
+    }
+
+    h1, h2, h3, h4, h5, h6, p, label, .css-1d391kg {
+        color: #E2E8F0 !important;
+    }
+
     /* Headers */
     h1 {
-        color: #2E86AB;
+        color: #8DD7FF;
         font-family: 'Segoe UI', sans-serif;
         font-weight: 700;
     }
-    
+
     h2, h3 {
-        color: #2E86AB;
+        color: #A3D2FF;
         font-family: 'Segoe UI', sans-serif;
     }
-    
+
     /* Price display */
     .price-box {
-        background: linear-gradient(135deg, #2E86AB 0%, #06A77D 100%);
+        background: linear-gradient(135deg, #1E3A8A 0%, #0F766E 100%);
         color: white;
         padding: 30px;
         border-radius: 15px;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-    
+
     /* Sidebar styling */
     .css-1d391kg {
         padding: 20px;
+        background-color: #0F172A;
     }
-    
+
     /* Slider labels */
     .stSlider > label {
-        color: #2E86AB;
+        color: #A3D2FF;
         font-weight: 600;
     }
-    
+
     /* Radio buttons */
     .stRadio > label {
-        color: #2E86AB;
+        color: #A3D2FF;
         font-weight: 500;
+    }
+
+    .stMetricValue, .stMetricLabel {
+        color: #E2E8F0 !important;
+    }
+
+    .stMarkdown, .stText, .css-1offfwp, .css-1e5imcs {
+        color: #CBD5E1 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -199,10 +221,14 @@ def load_model():
 @st.cache_data
 def load_reference_data():
     """Load reference data for statistics and visualization"""
-    data_file = RAW_DIR / 'ToyotaCorolla.csv'
+    search_paths = [
+        RAW_DIR / 'ToyotaCorolla.csv',
+        BASE_DIR / 'ToyotaCorolla.csv'
+    ]
 
-    if data_file.exists():
-        return pd.read_csv(data_file)
+    for data_file in search_paths:
+        if data_file.exists():
+            return pd.read_csv(data_file)
 
     st.warning("⚠️ Reference data not found. Using default statistics.")
     return pd.DataFrame({'Price': []})
@@ -462,13 +488,16 @@ def main():
     
     st.header("📊 Analytics & Insights")
     
-    tab1, tab2, tab3 = st.tabs(["Feature Importance", "Price Analysis", "Market Comparison"])
+    tab1, tab2 = st.tabs(["Feature Importance", "Price Analysis"])
     
     with tab1:
         st.subheader("Most Important Features for Price Prediction")
         
-        # Feature importance chart
-        top_features = feature_importance.head(12)
+        # Filter out board-related features from the importance chart
+        importance_for_plot = feature_importance[
+            feature_importance['Feature'] != 'Boardcomputer'
+        ]
+        top_features = importance_for_plot.head(12)
         
         fig = go.Figure(data=[
             go.Bar(
@@ -477,7 +506,7 @@ def main():
                 orientation='h',
                 marker=dict(
                     color=top_features['Importance'],
-                    colorscale='Viridis',
+                    colorscale='Oranges',
                     showscale=False
                 ),
                 text=[f"{val:.4f}" for val in top_features['Importance']],
@@ -491,7 +520,7 @@ def main():
             yaxis_title="Feature",
             height=500,
             showlegend=False,
-            template="plotly_white"
+            template="plotly_dark"
         )
         
         fig.update_yaxes(autorange="reversed")
@@ -538,7 +567,7 @@ def main():
                 xaxis_title="Age (months)",
                 yaxis_title="Price (€)",
                 height=400,
-                template="plotly_white"
+                template="plotly_dark"
             )
             
             st.plotly_chart(fig_age, width='stretch')
@@ -566,7 +595,7 @@ def main():
                 xaxis_title="Mileage (1000 km)",
                 yaxis_title="Price (€)",
                 height=400,
-                template="plotly_white"
+                template="plotly_dark"
             )
             
             st.plotly_chart(fig_mileage, width='stretch')
@@ -594,63 +623,10 @@ def main():
                 xaxis_title="Horsepower (HP)",
                 yaxis_title="Price (€)",
                 height=400,
-                template="plotly_white"
+                template="plotly_dark"
             )
             
             st.plotly_chart(fig_hp, width='stretch')
-    
-    with tab3:
-        st.subheader("Market Position Analysis")
-        
-        if reference_data is not None and not reference_data.empty:
-            # Clean reference data
-            ref_prices = pd.to_numeric(reference_data['Price'], errors='coerce').dropna()
-            
-            # Statistics
-            col1, col2, col3, col4 = st.columns(4)
-            
-            with col1:
-                st.metric("Market Average", f"€{ref_prices.mean():,.0f}")
-            with col2:
-                st.metric("Market Median", f"€{ref_prices.median():,.0f}")
-            with col3:
-                percentile = (ref_prices <= predicted_price).sum() / len(ref_prices) * 100
-                st.metric("Your Position", f"{percentile:.1f}th percentile")
-            with col4:
-                price_range = ref_prices.quantile([0.25, 0.75])
-                st.metric("IQR Range", f"€{price_range[0.25]:,.0f} - €{price_range[0.75]:,.0f}")
-            
-            st.divider()
-            
-            # Distribution comparison
-            fig_dist = go.Figure()
-            
-            fig_dist.add_trace(go.Histogram(
-                x=ref_prices,
-                nbinsx=50,
-                name='Market Prices',
-                marker=dict(color='rgba(46, 134, 171, 0.7)')
-            ))
-            
-            fig_dist.add_vline(
-                x=predicted_price,
-                line_dash="dash",
-                line_color="red",
-                annotation_text="Your Prediction",
-                annotation_position="top right"
-            )
-            
-            fig_dist.update_layout(
-                title="Your Valuation vs Market Distribution",
-                xaxis_title="Price (€)",
-                yaxis_title="Number of Vehicles",
-                height=400,
-                template="plotly_white"
-            )
-            
-            st.plotly_chart(fig_dist, width='stretch')
-        else:
-            st.warning("Market comparison data not available")
     
     # ========================================================================
     # FOOTER
