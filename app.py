@@ -100,7 +100,7 @@ def create_fallback_model():
 # ============================================================================
 
 st.set_page_config(
-    page_title="Toyota Corolla Valuation",
+    page_title="Case Study: A Market-Independent ML Valuation Tool",
     page_icon="🚗",
     layout="wide",
     initial_sidebar_state="expanded"
