@@ -328,7 +328,7 @@ def main():
     # Header
     col1, col2 = st.columns([3, 1])
     with col1:
-        st.title("🚗 Toyota Corolla Valuation Tool")
+        st.title("🚗 Case Study: A Market-Independent ML Valuation Tool")
         st.markdown("*Predict resale prices using advanced machine learning*")
     
     with col2:
