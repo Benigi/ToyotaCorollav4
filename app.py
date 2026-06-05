@@ -283,12 +283,12 @@ def main():
 
     # ---- Page header ------------------------------------------------
     st.markdown(
-        "<h1>Toyota Corolla — Used Vehicle Price Assessment Tool</h1>",
+        "<h1>Toyota Corolla — Price Valuation Tool</h1>",
         unsafe_allow_html=True
     )
     st.markdown(
         "<p style='color:#7A90B0; font-size:0.88rem; margin-top:-8px; margin-bottom:1rem;'>"
-        "Predictive model based on Random Forest regression &nbsp;|&nbsp; Academic project"
+        "Based on the Random Forest model"
         "</p>",
         unsafe_allow_html=True
     )
