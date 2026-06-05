@@ -73,9 +73,9 @@ st.markdown("""
         text-align: center;
         box-shadow: 0 2px 16px rgba(26,58,107,0.13);
     }
-    .price-card .label { font-size: 0.85rem; opacity: 0.85; margin-bottom: 6px; letter-spacing: 0.05em; text-transform: uppercase; }
-    .price-card .value { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; margin: 0; }
-    .price-card .sub   { font-size: 0.8rem; opacity: 0.75; margin-top: 6px; }
+    .price-card .label { color: #FFFFFF; font-size: 0.85rem; opacity: 0.85; margin-bottom: 6px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .price-card .value { color: #FFFFFF; font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; margin: 0; }
+    .price-card .sub   { color: #FFFFFF; font-size: 0.8rem; opacity: 0.75; margin-top: 6px; }
 
     /* ---- Metric tiles ---- */
     .metric-tile {
