@@ -67,7 +67,7 @@ st.markdown("""
     /* ---- Price card ---- */
     .price-card {
         background: linear-gradient(135deg, #1A3A6B 0%, #1B6CA8 100%);
-        color: white;
+        color: #FFFFFF;
         padding: 2.2rem 2.5rem;
         border-radius: 12px;
         text-align: center;
