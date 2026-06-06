@@ -348,7 +348,6 @@ def main():
         <div class="price-card">
             <div class="label">Estimated Resale Value</div>
             <div class="value">€{predicted_price:,.0f}</div>
-            <div class="sub">Based on {len(feature_importance)} vehicle parameters</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -485,8 +484,6 @@ def main():
         Prices are estimated by a Random Forest regression model (R&nbsp;=&nbsp;0.87, MAPE&nbsp;≈&nbsp;9.2&nbsp;%)
         trained on a dataset of used Toyota Corolla transactions.
         The model captures non-linear relationships between vehicle characteristics and market price.
-        Estimates are indicative and should be interpreted in the context of local market conditions,
-        vehicle condition, and transaction-specific factors.
     </div>
     """, unsafe_allow_html=True)
 
